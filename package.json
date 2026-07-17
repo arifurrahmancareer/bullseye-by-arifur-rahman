@@ -1,0 +1,12 @@
+{
+  "name": "bullseye-prototypes",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Bullseye — gamified stock-market learning platform for Indian teens. Interactive prototypes (onboarding flow + dashboard).",
+  "scripts": {
+    "start": "npx --yes serve .",
+    "dev": "npx --yes serve ."
+  },
+  "keywords": ["prototype", "fintech", "education", "gamification", "static-site"],
+  "license": "MIT"
+}

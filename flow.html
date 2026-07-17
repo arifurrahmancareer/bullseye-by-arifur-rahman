@@ -1,0 +1,427 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<title>Bullseye — FTUE & Learning Flow</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --mono:"JetBrains Mono","Liberation Mono","DejaVu Sans Mono",ui-monospace,monospace;
+  --ink:#F4F6FF; --pos:#4ADE80; --neg:#FB7185; --violet:#A78BFA; --cyan:#22D3EE; --blue:#60A5FA; --amber:#FBBF24;
+  --ease:cubic-bezier(.22,1,.36,1);
+  --glass:rgba(255,255,255,.055);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%}
+body{
+  font-family:var(--mono); color:var(--ink); letter-spacing:-.2px;
+  background:
+    radial-gradient(1200px 800px at 12% -10%,#1b1145,transparent 60%),
+    radial-gradient(1000px 700px at 100% 0,#0c2b3d,transparent 55%),
+    linear-gradient(180deg,#0a0718,#07050F);
+  min-height:100%; display:grid; place-items:center; padding:32px 16px; overflow-x:hidden;
+}
+.bg{position:fixed;inset:0;z-index:-1;overflow:hidden}
+.blob{position:absolute;border-radius:50%;filter:blur(70px);opacity:.5;mix-blend-mode:screen;animation:float 20s var(--ease) infinite}
+.blob.a{width:520px;height:520px;background:#6d28d9;top:-120px;left:-60px}
+.blob.b{width:480px;height:480px;background:#0891b2;top:20%;right:-120px;animation-delay:-6s}
+.blob.c{width:420px;height:420px;background:#2563eb;bottom:-160px;left:30%;animation-delay:-11s}
+@keyframes float{0%,100%{transform:translate(0,0) scale(1)}33%{transform:translate(40px,30px) scale(1.08)}66%{transform:translate(-30px,20px) scale(.95)}}
+
+.wrap{width:100%;max-width:1120px;display:flex;flex-direction:column;align-items:center;gap:22px}
+.head{text-align:center;max-width:640px}
+.head h1{font-size:22px;font-weight:800;letter-spacing:-.5px}
+.head h1 span{color:var(--violet)}
+.head p{margin-top:8px;font-size:12.5px;color:rgba(244,246,255,.6)}
+
+/* step rail */
+.rail{display:flex;gap:8px;flex-wrap:wrap;justify-content:center}
+.rail button{font-family:var(--mono);cursor:pointer;border:1px solid rgba(255,255,255,.1);background:rgba(0,0,0,.25);color:rgba(244,246,255,.6);padding:7px 12px;border-radius:999px;font-size:11px;font-weight:600;transition:all .3s var(--ease)}
+.rail button.on{border-color:rgba(167,139,250,.5);background:rgba(255,255,255,.1);color:#fff}
+.rail button:focus-visible{outline:2px solid var(--cyan);outline-offset:2px}
+
+/* phone */
+.stage{display:flex;gap:26px;align-items:flex-start;flex-wrap:wrap;justify-content:center}
+.phone{
+  position:relative;width:340px;height:710px;border-radius:44px;padding:12px;
+  background:linear-gradient(160deg,rgba(255,255,255,.16),rgba(255,255,255,.03));
+  box-shadow:0 40px 80px -30px rgba(6,4,24,.9),0 0 0 1px rgba(255,255,255,.06);
+}
+.notch{position:absolute;top:20px;left:50%;transform:translateX(-50%);width:120px;height:26px;background:#050409;border-radius:0 0 16px 16px;z-index:20}
+.screen-frame{position:relative;width:100%;height:100%;border-radius:34px;overflow:hidden;background:linear-gradient(180deg,#0b0820,#07050F);border:1px solid rgba(255,255,255,.06)}
+.screen{position:absolute;inset:0;display:none;flex-direction:column;padding:52px 22px 24px;overflow-y:auto}
+.screen.active{display:flex;animation:slideIn .5s var(--ease)}
+@keyframes slideIn{from{opacity:0;transform:translateX(22px)}to{opacity:1;transform:translateX(0)}}
+@keyframes pop{0%{transform:scale(.6);opacity:0}60%{transform:scale(1.12)}100%{transform:scale(1);opacity:1}}
+
+.glass{position:relative;background:var(--glass);border-radius:20px;backdrop-filter:blur(22px) saturate(140%);-webkit-backdrop-filter:blur(22px) saturate(140%);box-shadow:0 1px 0 rgba(255,255,255,.10) inset,0 20px 45px -18px rgba(6,4,24,.85)}
+.glass::before{content:"";position:absolute;inset:0;border-radius:inherit;padding:1px;background:linear-gradient(145deg,rgba(255,255,255,.5),rgba(255,255,255,.06) 40%,rgba(255,255,255,0) 70%);-webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);-webkit-mask-composite:xor;mask-composite:exclude;pointer-events:none}
+
+.logo{display:flex;align-items:center;gap:10px;justify-content:center;margin-bottom:6px}
+.logo .mark{width:38px;height:38px;border-radius:12px;display:grid;place-items:center;font-size:18px;background:linear-gradient(135deg,var(--violet),#6366f1,var(--cyan))}
+.logo h2{font-size:19px;font-weight:800}
+.logo h2 span{color:var(--violet)}
+
+.btn{font-family:var(--mono);cursor:pointer;border:none;width:100%;border-radius:16px;padding:15px;font-size:13px;font-weight:700;color:#fff;background:linear-gradient(90deg,#7c5cff,var(--cyan));box-shadow:0 12px 26px -10px rgba(124,92,255,.8);transition:transform .25s var(--ease)}
+.btn:hover{transform:translateY(-2px)}
+.btn:active{transform:scale(.97)}
+.btn.ghost{background:rgba(255,255,255,.06);box-shadow:none;color:rgba(244,246,255,.75);font-weight:600}
+.btn:focus-visible{outline:2px solid var(--cyan);outline-offset:2px}
+
+.lang{display:flex;gap:6px;background:rgba(0,0,0,.25);border:1px solid rgba(255,255,255,.1);border-radius:14px;padding:5px;margin:0 auto 4px;width:max-content}
+.lang button{font-family:var(--mono);cursor:pointer;border:none;background:none;color:rgba(244,246,255,.6);padding:6px 12px;border-radius:9px;font-size:11px;font-weight:600;transition:all .3s var(--ease)}
+.lang button.on{background:rgba(255,255,255,.1);color:#fff}
+
+.choice{width:100%;text-align:left;font-family:var(--mono);cursor:pointer;border:1px solid rgba(255,255,255,.12);background:rgba(255,255,255,.05);color:var(--ink);border-radius:14px;padding:14px;font-size:13px;font-weight:600;display:flex;align-items:center;gap:12px;transition:all .25s var(--ease)}
+.choice:hover{transform:translateX(4px);border-color:rgba(167,139,250,.5)}
+.choice .em{font-size:20px}
+.choice.sel{border-color:var(--violet);background:linear-gradient(90deg,rgba(167,139,250,.22),rgba(34,211,238,.08))}
+.choice.correct{border-color:var(--pos);background:rgba(74,222,128,.15)}
+.choice.wrong{border-color:var(--neg);background:rgba(251,113,133,.15)}
+.choice:focus-visible{outline:2px solid var(--cyan);outline-offset:2px}
+
+.tag{display:inline-flex;align-items:center;gap:6px;border-radius:999px;padding:5px 11px;font-size:10px;font-weight:700}
+.tag.pos{background:rgba(74,222,128,.15);color:var(--pos)}
+.tag.vio{background:rgba(167,139,250,.15);color:var(--violet)}
+.muted{color:rgba(244,246,255,.55)}
+.center{text-align:center}
+
+.ringwrap{position:relative;width:150px;height:150px;margin:6px auto}
+.badge-pop{font-size:70px;animation:pop .7s var(--ease) both}
+.confetti{position:absolute;width:9px;height:9px;border-radius:2px;top:50%;left:50%;opacity:0}
+
+.pbar{height:9px;border-radius:999px;background:rgba(0,0,0,.4);border:1px solid rgba(255,255,255,.1);overflow:hidden}
+.pbar i{display:block;height:100%;border-radius:999px;background:linear-gradient(90deg,var(--violet),var(--cyan));box-shadow:0 0 14px rgba(124,92,255,.7);width:0;transition:width 1.2s var(--ease)}
+
+.candle{display:flex;align-items:flex-end;gap:7px;height:96px;justify-content:center;margin:4px 0}
+.candle .c{width:16px;border-radius:3px;position:relative}
+.candle .c::before{content:"";position:absolute;left:50%;top:-8px;bottom:-8px;width:2px;transform:translateX(-50%);background:inherit;opacity:.6}
+
+.xpfly{position:absolute;font-weight:800;color:var(--amber);font-size:14px;opacity:0}
+@keyframes xpUp{0%{opacity:0;transform:translateY(0)}30%{opacity:1}100%{opacity:0;transform:translateY(-40px)}}
+
+.caption{max-width:340px;text-align:center;font-size:11px}
+.stepnav{display:flex;gap:10px;margin-top:14px;width:100%}
+
+.legend{max-width:300px;display:flex;flex-direction:column;gap:12px}
+.legend .glass{padding:16px 18px}
+.legend h4{font-size:12px;font-weight:700;margin-bottom:6px;display:flex;gap:7px;align-items:center}
+.legend p{font-size:11px;line-height:1.55;color:rgba(244,246,255,.6)}
+
+.toast-wrap{position:fixed;left:50%;bottom:26px;transform:translateX(-50%);display:flex;flex-direction:column;gap:8px;z-index:80}
+.toast{display:flex;align-items:center;gap:9px;background:rgba(12,10,28,.86);backdrop-filter:blur(16px);border:1px solid rgba(255,255,255,.14);border-radius:13px;padding:11px 15px;font-size:12px;font-weight:600;opacity:0;transform:translateY(14px);transition:all .35s var(--ease);box-shadow:0 16px 34px -16px rgba(0,0,0,.8)}
+.toast.show{opacity:1;transform:translateY(0)}
+
+@media (max-width:760px){.legend{max-width:340px}}
+@media (prefers-reduced-motion:reduce){*{animation-duration:.001s!important;transition-duration:.001s!important}.blob{animation:none}}
+</style>
+</head>
+<body>
+<div class="bg"><div class="blob a"></div><div class="blob b"></div><div class="blob c"></div></div>
+
+<div class="wrap">
+  <div class="head">
+    <div class="logo"><div class="mark">🎯</div><h2>Bulls<span>eye</span></h2></div>
+    <h1 id="flowTitle">First-Time User Experience → First Lesson → Rank Up</h1>
+    <p id="flowSub">A clickable walkthrough of the core teen journey. Use the steps below or the buttons in the phone to move through the flow.</p>
+  </div>
+
+  <div class="rail" id="rail"></div>
+
+  <div class="stage">
+    <div class="phone">
+      <div class="notch"></div>
+      <div class="screen-frame" id="frame">
+
+        <!-- 0 HOOK -->
+        <section class="screen active" data-i="0">
+          <div class="lang" id="langPick">
+            <button data-l="EN" class="on">EN</button><button data-l="हिं">हिं</button><button data-l="বাং">বাং</button>
+          </div>
+          <div style="flex:1;display:flex;flex-direction:column;justify-content:center;gap:16px">
+            <div class="tag vio" style="margin:0 auto">🎯 NO REAL MONEY · ZERO RISK</div>
+            <h2 id="hookH" style="font-size:26px;font-weight:800;text-align:center;line-height:1.25">Turn ₹1,00,000 into more.</h2>
+            <p id="hookP" class="center muted" style="font-size:13px">Learn the stock market like a game. Play first, sign up later.</p>
+          </div>
+          <button class="btn" data-next>▸ Start playing</button>
+          <button class="btn ghost" style="margin-top:10px" data-next>I already have an account</button>
+        </section>
+
+        <!-- 1 VIBE QUIZ -->
+        <section class="screen" data-i="1">
+          <div class="tag vio" style="margin:0 auto 14px">3-TAP VIBE CHECK</div>
+          <h2 style="font-size:19px;font-weight:800;text-align:center;margin-bottom:6px">If you had ₹1,00,000 today…</h2>
+          <p class="center muted" style="font-size:12px;margin-bottom:18px">Tap what you'd buy. No wrong answers — this is your first call.</p>
+          <div style="display:flex;flex-direction:column;gap:11px">
+            <button class="choice vibe"><span class="em">🍔</span><div><b>Zomato</b><br><small class="muted">Food delivery you use daily</small></div></button>
+            <button class="choice vibe"><span class="em">🚗</span><div><b>Tata Motors</b><br><small class="muted">Cars &amp; EVs on every road</small></div></button>
+            <button class="choice vibe"><span class="em">⏳</span><div><b>Wait &amp; watch</b><br><small class="muted">Not sure yet — learn first</small></div></button>
+          </div>
+        </section>
+
+        <!-- 2 INSTANT WIN -->
+        <section class="screen" data-i="2">
+          <div style="flex:1;display:flex;flex-direction:column;justify-content:center;align-items:center;gap:14px">
+            <div class="badge-pop">🎉</div>
+            <h2 style="font-size:22px;font-weight:800;text-align:center">You made your first call!</h2>
+            <p class="center muted" style="font-size:12.5px">That's it — investing isn't scary. You just did it.</p>
+            <div class="glass" style="padding:16px 20px;display:flex;gap:18px;margin-top:6px">
+              <div class="center"><b style="color:var(--amber);font-size:20px">+50</b><br><small class="muted">MARKET PTS</small></div>
+              <div class="center"><b style="font-size:20px">🥉</b><br><small class="muted">FIRST BADGE</small></div>
+              <div class="center"><b style="color:var(--pos);font-size:20px">Day 1</b><br><small class="muted">STREAK</small></div>
+            </div>
+          </div>
+          <button class="btn" data-next>Save my progress ▸</button>
+          <p class="center muted" style="font-size:10px;margin-top:9px">You start at Rookie I — don't lose your streak.</p>
+        </section>
+
+        <!-- 3 LESSON -->
+        <section class="screen" data-i="3">
+          <div style="display:flex;align-items:center;gap:8px;margin-bottom:14px">
+            <span class="muted" style="font-size:11px">‹ Phase 3 · Paper Trading</span>
+            <span style="margin-left:auto;font-size:11px;font-weight:700">71%</span>
+          </div>
+          <div class="pbar" style="margin-bottom:20px"><i id="lessonBar"></i></div>
+          <div class="glass" style="padding:20px;text-align:center">
+            <div class="tag pos" style="margin:0 auto 12px">CONCEPT CARD</div>
+            <h2 style="font-size:17px;font-weight:800;margin-bottom:14px">Reading a candlestick</h2>
+            <div class="candle">
+              <div class="c" style="height:40px;background:var(--pos)"></div>
+              <div class="c" style="height:66px;background:var(--pos)"></div>
+              <div class="c" style="height:30px;background:var(--neg)"></div>
+              <div class="c" style="height:82px;background:var(--pos)"></div>
+              <div class="c" style="height:52px;background:var(--neg)"></div>
+            </div>
+            <p class="muted" style="font-size:12px;line-height:1.6;margin-top:10px">A <b style="color:var(--pos)">green</b> candle means the price <b>rose</b>. A <b style="color:var(--neg)">red</b> one means it <b>fell</b>. The wick shows the high &amp; low.</p>
+          </div>
+          <button class="btn" style="margin-top:16px" data-next>Got it — quiz me ▸</button>
+        </section>
+
+        <!-- 4 QUIZ -->
+        <section class="screen" data-i="4">
+          <div style="display:flex;align-items:center;gap:8px;margin-bottom:14px">
+            <span class="muted" style="font-size:11px">‹ Quiz · Q3 of 5</span>
+            <span class="tag pos" style="margin-left:auto">🔥 4-streak</span>
+          </div>
+          <h2 style="font-size:17px;font-weight:800;margin-bottom:18px">What does a GREEN candle mean?</h2>
+          <div style="display:flex;flex-direction:column;gap:11px" id="quizOpts">
+            <button class="choice quiz" data-correct="0">Price fell</button>
+            <button class="choice quiz" data-correct="1">Price rose</button>
+            <button class="choice quiz" data-correct="0">Market was closed</button>
+          </div>
+          <div id="quizFx" style="margin-top:16px;min-height:44px"></div>
+        </section>
+
+        <!-- 5 RANK UP -->
+        <section class="screen" data-i="5">
+          <div style="flex:1;display:flex;flex-direction:column;justify-content:center;align-items:center;gap:12px;position:relative" id="rankStage">
+            <div class="tag pos">▲ RANKING UP</div>
+            <div class="ringwrap">
+              <svg width="150" height="150" viewBox="0 0 150 150" style="transform:rotate(-90deg)">
+                <circle cx="75" cy="75" r="66" fill="none" stroke="rgba(255,255,255,.1)" stroke-width="9"/>
+                <circle id="rankRing" cx="75" cy="75" r="66" fill="none" stroke="url(#rg)" stroke-width="9" stroke-linecap="round" stroke-dasharray="415" stroke-dashoffset="415" style="transition:stroke-dashoffset 1.4s var(--ease)"/>
+                <defs><linearGradient id="rg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#A78BFA"/><stop offset="1" stop-color="#22D3EE"/></linearGradient></defs>
+              </svg>
+              <div style="position:absolute;inset:0;display:grid;place-items:center"><span class="badge-pop" style="font-size:52px">🐂</span></div>
+            </div>
+            <h2 style="font-size:24px;font-weight:800">Bull III</h2>
+            <p class="center muted" style="font-size:12.5px">You out-ranked <b style="color:var(--ink)">62%</b> of players this week.</p>
+            <div class="tag vio">🔓 Unlocked: Squad Battles</div>
+          </div>
+          <button class="btn" id="shareBtn">📣 Tell your Squad</button>
+          <button class="btn" id="toDash" style="margin-top:10px;background:linear-gradient(135deg,#7c5cff,#22D3EE);color:#fff;border-color:transparent">🏠 Go to my Dashboard →</button>
+          <button class="btn ghost" style="margin-top:10px" data-restart>↻ Replay the flow</button>
+        </section>
+
+      </div>
+    </div>
+
+    <div class="legend">
+      <div class="glass"><h4>🎣 <span id="lgT">Value before friction</span></h4><p id="lgP">The first win — a real "call" plus XP and a badge — happens before any signup. Signup is framed as "save your progress," not a gate.</p></div>
+      <div class="glass"><h4>🧠 Behavioral hook</h4><p id="lgB">Endowed progress: the teen lands already at Rookie I, Day 1 — not at zero — so there's a streak to protect from minute one.</p></div>
+      <div class="glass"><h4>⌨️ Try it</h4><p>Click choices, answer the quiz (right or wrong both animate), switch languages, and walk the steps. Fully keyboard-navigable with Tab + Enter.</p></div>
+    </div>
+  </div>
+</div>
+
+<div class="toast-wrap" id="toasts" aria-live="polite"></div>
+
+<script>
+(function(){
+  var screens=[].slice.call(document.querySelectorAll('.screen'));
+  var rail=document.getElementById('rail');
+  var frame=document.getElementById('frame');
+  var steps=["Hook","Vibe quiz","First win","Lesson","Quiz","Rank up"];
+  var legends=[
+    {t:"Value before friction",p:"The hook removes the #1 blocker (fear) in the headline, and offers zero-risk virtual money up front.",b:"Loss-aversion primer: we hand over ₹1,00,000 virtual immediately, so there's something to protect from step one."},
+    {t:"No wrong answers",p:"The 3-tap vibe check makes the teen act before they can feel intimidated — a tiny, safe first decision.",b:"Commitment & consistency: a small first 'call' makes the next, bigger action feel natural."},
+    {t:"Instant win",p:"A real reward burst (XP + badge + streak) fires before signup, proving the loop feels good.",b:"Variable reward + endowed progress: starting at Rookie I Day 1 beats starting at zero."},
+    {t:"Bite-size learning",p:"60–90s concept cards with a visual and one idea — the self-contained knowledge ecosystem.",b:"Goal-gradient: a 71%-full phase bar pulls the user to finish rather than a blank slate."},
+    {t:"Feedback, not punishment",p:"Right answers celebrate; wrong answers explain and let you retry — learning stays low-stakes.",b:"Deliberate practice: immediate feedback plus streak combos reinforce the concept."},
+    {t:"Identity reward",p:"Ranking up is a status moment with a share loop to a squad — social proof drives the return visit.",b:"Zeigarnik + social proof: unlocking Squad Battles is an open loop and a reason to come back."}
+  ];
+  var cur=0;
+
+  var I18N={
+    "EN":{h:"Turn ₹1,00,000 into more.",p:"Learn the stock market like a game. Play first, sign up later."},
+    "हिं":{h:"₹1,00,000 को और बढ़ाओ।",p:"शेयर बाज़ार को गेम की तरह सीखो। पहले खेलो, बाद में साइन अप करो।"},
+    "বাং":{h:"₹১,০০,০০০ থেকে আরও বাড়াও।",p:"স্টক মার্কেট শেখো গেমের মতো। আগে খেলো, পরে সাইন আপ করো।"}
+  };
+
+  function toast(msg,icon){
+    var w=document.getElementById('toasts');
+    var t=document.createElement('div');t.className='toast';
+    var s=document.createElement('span');s.textContent=icon||'✅';
+    var x=document.createElement('span');x.textContent=msg;
+    t.appendChild(s);t.appendChild(x);w.appendChild(t);
+    requestAnimationFrame(function(){t.classList.add('show')});
+    setTimeout(function(){t.classList.remove('show');setTimeout(function(){t.remove()},400)},2600);
+  }
+  function key(el,fn){ if(!el)return; el.setAttribute('tabindex','0'); el.addEventListener('keydown',function(e){ if(e.key==='Enter'||e.key===' '){e.preventDefault();fn(e);} }); }
+
+  function show(n){
+    n=Math.max(0,Math.min(screens.length-1,n));
+    cur=n;
+    screens.forEach(function(s){ s.classList.toggle('active', +s.dataset.i===n); });
+    [].forEach.call(rail.children,function(b,i){ b.classList.toggle('on',i===n); });
+    frame.scrollTop=0;
+    var lg=legends[n];
+    document.getElementById('lgT').textContent=lg.t;
+    document.getElementById('lgP').textContent=lg.p;
+    document.getElementById('lgB').textContent=lg.b;
+    if(n===3){ setTimeout(function(){document.getElementById('lessonBar').style.width='71%';},120); }
+    if(n===5){ animateRankUp(); }
+  }
+
+  // step rail
+  steps.forEach(function(label,i){
+    var b=document.createElement('button'); b.textContent=(i+1)+' · '+label;
+    if(i===0)b.classList.add('on');
+    b.addEventListener('click',function(){show(i);});
+    rail.appendChild(b);
+  });
+
+  // next / restart buttons
+  document.querySelectorAll('[data-next]').forEach(function(btn){ btn.addEventListener('click',function(){ show(cur+1); }); });
+  document.querySelectorAll('[data-restart]').forEach(function(btn){ btn.addEventListener('click',function(){ resetQuiz(); show(0); toast('Flow restarted','↻'); }); });
+
+  // language
+  document.querySelectorAll('#langPick button').forEach(function(b){
+    b.addEventListener('click',function(){
+      document.querySelectorAll('#langPick button').forEach(function(x){x.classList.remove('on')});
+      b.classList.add('on');
+      var l=b.dataset.l, t=I18N[l]||I18N.EN;
+      document.getElementById('hookH').textContent=t.h;
+      document.getElementById('hookP').textContent=t.p;
+      document.documentElement.lang = l==='EN'?'en':(l==='हिं'?'hi':'bn');
+      toast('Language set to '+l,'🌏');
+    });
+  });
+
+  // vibe quiz
+  document.querySelectorAll('.vibe').forEach(function(b){
+    b.addEventListener('click',function(){
+      document.querySelectorAll('.vibe').forEach(function(x){x.classList.remove('sel')});
+      b.classList.add('sel');
+      var name=b.querySelector('b').textContent;
+      toast('Nice call: '+name,'📈');
+      setTimeout(function(){ show(2); },520);
+    });
+  });
+
+  // knowledge quiz
+  function resetQuiz(){
+    document.querySelectorAll('.quiz').forEach(function(x){x.classList.remove('correct','wrong');x.disabled=false;});
+    var fx=document.getElementById('quizFx'); if(fx)fx.innerHTML='';
+    document.getElementById('lessonBar').style.width='0';
+    document.getElementById('rankRing').style.strokeDashoffset='415';
+  }
+  document.querySelectorAll('.quiz').forEach(function(b){
+    b.addEventListener('click',function(){
+      var fx=document.getElementById('quizFx');
+      if(b.dataset.correct==='1'){
+        b.classList.add('correct');
+        document.querySelectorAll('.quiz').forEach(function(x){x.disabled=true;});
+        fx.innerHTML='<div class="tag pos" style="font-size:12px">🔥 5-streak! +30 ⚡ Correct</div>';
+        toast('+30 ⚡ · 5-streak!','🔥');
+        setTimeout(function(){ show(5); },900);
+      } else {
+        b.classList.add('wrong');
+        fx.innerHTML='<p class="muted" style="font-size:11.5px">Not quite — a <b style="color:var(--pos)">green</b> candle means the price <b>rose</b>. Try again 👇</p>';
+        toast('Try again — no penalty','💡');
+        setTimeout(function(){ b.classList.remove('wrong'); },700);
+      }
+    });
+  });
+
+  // rank up
+  function animateRankUp(){
+    var ring=document.getElementById('rankRing');
+    ring.style.strokeDashoffset='415';
+    setTimeout(function(){ ring.style.strokeDashoffset='42'; },150);
+    burst();
+  }
+  function burst(){
+    var stage=document.getElementById('rankStage');
+    var cols=['#A78BFA','#22D3EE','#4ADE80','#FBBF24','#FB7185'];
+    for(var i=0;i<18;i++){
+      (function(i){
+        var c=document.createElement('span');c.className='confetti';
+        c.style.background=cols[i%cols.length];
+        stage.appendChild(c);
+        var ang=Math.random()*Math.PI*2, dist=60+Math.random()*90;
+        var dx=Math.cos(ang)*dist, dy=Math.sin(ang)*dist;
+        requestAnimationFrame(function(){
+          c.style.transition='transform 1s var(--ease), opacity 1s var(--ease)';
+          c.style.opacity='1';
+          c.style.transform='translate('+dx+'px,'+dy+'px) rotate('+(Math.random()*360)+'deg)';
+          setTimeout(function(){c.style.opacity='0';setTimeout(function(){c.remove()},600);},600);
+        });
+      })(i);
+    }
+  }
+  var shareBtn=document.getElementById('shareBtn');
+  shareBtn.addEventListener('click',function(){ toast('Shared to Dalal St. Sharks 🦈','📣'); burst(); });
+
+  // continuity: flow → dashboard (animated hand-off, then REAL navigation; embed-safe fallback)
+  var toDash=document.getElementById('toDash');
+  function goDashboard(){
+    if(document.getElementById('landOverlay')) return;
+    var ov=document.createElement('div');
+    ov.id='landOverlay';
+    ov.setAttribute('role','dialog');
+    ov.setAttribute('aria-label','Landing on your dashboard');
+    ov.style.cssText='position:fixed;inset:0;z-index:9999;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px;background:rgba(7,5,15,.86);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);opacity:0;transition:opacity .4s var(--ease);text-align:center;padding:24px';
+    ov.innerHTML='<div style="font-size:46px" class="badge-pop">🎯</div>'+
+      '<div style="font-size:16px;font-weight:800;color:var(--ink)">Landing on your Dashboard…</div>'+
+      '<div style="width:190px;height:6px;border-radius:99px;overflow:hidden;background:rgba(255,255,255,.12)"><i id="landBar" style="display:block;height:100%;width:0;border-radius:99px;background:linear-gradient(90deg,#A78BFA,#22D3EE);transition:width 1.05s var(--ease)"></i></div>'+
+      '<div id="landMsg" style="font-size:12px;color:rgba(244,246,255,.6);max-width:270px;line-height:1.5">Onboarding complete as <b style="color:var(--ink)">Bull III</b> — taking you to your daily home base.</div>';
+    document.body.appendChild(ov);
+    requestAnimationFrame(function(){ ov.style.opacity='1'; var b=document.getElementById('landBar'); if(b){ b.style.width='100%'; } });
+    toast('Landing on your Dashboard…','🏠');
+    // real navigation once the hand-off animation plays (works in the linked build)
+    setTimeout(function(){ try { window.location.assign('dashboard.html'); } catch(e){} }, 1150);
+    // fallback: if we're still here (e.g. a sandboxed standalone embed), keep the overlay useful
+    setTimeout(function(){
+      var msg=document.getElementById('landMsg');
+      if(msg && !document.getElementById('landClose')){
+        msg.innerHTML='Onboarding complete as <b style="color:var(--ink)">Bull III</b>. This is exactly where you arrive in the app — open the <b style="color:var(--ink)">Dashboard</b> to continue.';
+        var c=document.createElement('button'); c.className='btn ghost'; c.id='landClose'; c.style.cssText='margin-top:6px;max-width:200px'; c.textContent='Got it ✕';
+        c.addEventListener('click',function(){ ov.style.opacity='0'; setTimeout(function(){ ov.remove(); },400); });
+        ov.appendChild(c);
+      }
+    }, 2600);
+  }
+  if(toDash){ toDash.addEventListener('click', goDashboard); }
+
+  // keyboard access for choices
+  document.querySelectorAll('.choice, .rail button, .btn, .lang button').forEach(function(el){ el.setAttribute('tabindex','0'); });
+
+  show(0);
+})();
+</script>
+</body>
+</html>
